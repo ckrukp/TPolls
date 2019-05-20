@@ -103,6 +103,37 @@ const main = server => {
   })
 
   server.post('/polls/:teamId/:pollId/responses', (req, res, next) => {
+    DB.Polls(req.params.teamId).findById(req.params.pollId, (err, ogDbRes) => {
+      if (err) {
+        console.error(err)
+        return next(err)
+      } else {
+        let exists = false
+
+        for (let x = 0; x < ogDbRes.responses.length; x++) {
+          const resA = ogDbRes.responses[x]
+          if (resA.content === req.body.content) {
+            exists = true
+          }
+        }
+
+        if (exists) {
+          res.send(409, 'This poll already has a response with the same content. Please submit a response with a different content value.')
+          return next()
+        } else {
+          ogDbRes.responses.push(req.body)
+          DB.Polls(req.params.teamId).updateOne({ _id: req.params.pollId }, ogDbRes, (err, nsDbRes) => {
+            if (err) {
+              console.error(err)
+              return next(err)
+            } else {
+              res.send(200, ogDbRes)
+              return next()
+            }
+          })
+        }
+      }
+    })
   })
 }
 
