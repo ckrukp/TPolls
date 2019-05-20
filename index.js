@@ -24,7 +24,7 @@ server.pre(versioning({ prefix: '/api' }))
 
 server.listen(config.port, () => {
   mongoose.Promise = global.Promise
-  mongoose.connect(config.db.uri, { useNewUrlParser: true, useFindAndModify: true })
+  mongoose.connect(config.db.uri, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true })
 
   const db = mongoose.connection
 
