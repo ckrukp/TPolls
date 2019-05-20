@@ -1,0 +1,27 @@
+{
+  "name": "@hf-solutions/tpolls",
+  "version": "1.0.0",
+  "description": "An API for creating and managing polls.",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "pnpm install",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Alcha",
+    "email": "alcha@hasslefree.solutions",
+    "url": "https://hasslefree.solutions"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "json-beautify": "^1.1.0",
+    "mongoose": "^5.5.7",
+    "mongoose-string-query": "^0.2.7",
+    "mongoose-timestamp": "^0.6.0",
+    "restify": "^8.3.2",
+    "restify-errors": "^8.0.0",
+    "restify-url-semver": "^1.1.1",
+    "simple-node-logger": "^18.12.22"
+  }
+}
