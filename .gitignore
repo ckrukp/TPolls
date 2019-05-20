@@ -3,3 +3,5 @@ logs/
 misc/
 
 pnpm-lock.yaml
+
+src/util/config.js
