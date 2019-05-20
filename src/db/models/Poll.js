@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
 const mongooseStringQuery = require('mongoose-string-query')
 const timestamps = require('mongoose-timestamp')
+const mongoose = require('mongoose')
 
 const PollSchema = mongoose.Schema({
   displayName: {
