@@ -8,7 +8,7 @@ const logOpts = {
   dateFormat: 'YYYY.MM.DD'
 }
 const log = require('simple-node-logger').createRollingFileLogger(logOpts)
-// const versioning = require('restify-url-semver')
+const versioning = require('restify-url-semver')
 
 const server = restify.createServer({
   name: config.name,
@@ -20,7 +20,7 @@ server.use(plugins.acceptParser(server.acceptable))
 server.use(plugins.queryParser({ mapParams: true }))
 server.use(plugins.fullResponse())
 
-// server.pre(versioning({ prefix: '/api' }))
+server.pre(versioning({ prefix: '/api' }))
 
 server.listen(config.port, () => {
   mongoose.Promise = global.Promise
