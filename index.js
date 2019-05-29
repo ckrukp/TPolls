@@ -1,4 +1,4 @@
-const config = require('./src/index').Config
+const config = require('./src/util/config')
 const restify = require('restify')
 const mongoose = require('mongoose')
 const plugins = restify.plugins
