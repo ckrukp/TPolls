@@ -3,6 +3,7 @@ const timestamps = require('mongoose-timestamp')
 const mongoose = require('mongoose')
 
 const PollSchema = mongoose.Schema({
+  _id: String,
   displayName: {
     type: String,
     required: false,

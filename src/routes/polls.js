@@ -2,11 +2,7 @@
 const restify = require('restify') // Used for type data
 // #endregion TypeData
 
-const DB = require('../db/index')
-
-const getPollsDb = req => {
-  return new DB.Polls(req.params.teamId)
-}
+const Mongo = require('../db')
 
 /**
  *
@@ -16,8 +12,8 @@ const main = server => {
   // Returns all polls currently created for the given team.
   server.get({ path: '/polls/:teamId', version: '1' }, async (req, res, next) => {
     try {
-      const pollsDb = getPollsDb(req)
-      const polls = await pollsDb.getPolls()
+      const pService = Mongo.getPollService(req)
+      const polls = await pService.getPolls()
 
       res.send(200, polls)
       return next()
@@ -31,8 +27,8 @@ const main = server => {
   // Creates a new poll for zthe given team using the given NewPoll object.
   server.post({ path: '/polls/:teamId', version: '1' }, async (req, res, next) => {
     try {
-      const pollsDb = getPollsDb(req)
-      const newPoll = await pollsDb.createPoll(req.body)
+      const pService = Mongo.getPollService(req)
+      const newPoll = await pService.createPoll(req.body)
 
       res.send(200, newPoll)
       return next()
@@ -49,8 +45,8 @@ const main = server => {
 
   server.get({ path: '/polls/:teamId/:pollId', version: '1' }, async (req, res, next) => {
     try {
-      const pollsDb = getPollsDb(req)
-      const poll = await pollsDb.getPoll(req.params.pollId)
+      const pService = Mongo.getPollService(req)
+      const poll = await pService.getPoll(req.params.pollId)
 
       res.send(200, poll)
       return next()
@@ -63,8 +59,8 @@ const main = server => {
 
   server.put({ path: '/polls/:teamId/:pollId', version: '1' }, async (req, res, next) => {
     try {
-      const pollsDb = getPollsDb(req)
-      const updatedPoll = await pollsDb.updatePoll(req.params.pollId, req.body)
+      const pService = Mongo.getPollService(req)
+      const updatedPoll = await pService.updatePoll(req.params.pollId, req.body)
 
       res.send(200, updatedPoll)
       return next()
@@ -77,8 +73,8 @@ const main = server => {
 
   server.del({ path: '/polls/:teamId/:pollId', version: '1' }, async (req, res, next) => {
     try {
-      const pollsDb = getPollsDb(req)
-      const dRes = await pollsDb.deletePollFromTeam(req.params.pollId)
+      const pService = Mongo.getPollService(req)
+      const dRes = await pService.deletePollFromTeam(req.params.pollId)
 
       res.send(200, dRes)
       return next()
@@ -91,8 +87,8 @@ const main = server => {
 
   server.get({ path: '/polls/:teamId/:pollId/question', version: '1' }, async (req, res, next) => {
     try {
-      const pollsDb = getPollsDb(req)
-      const question = await pollsDb.getPollQuestion(req.params.pollId)
+      const pService = Mongo.getPollService(req)
+      const question = await pService.getPollQuestion(req.params.pollId)
 
       res.send(200, question)
       return next()
@@ -105,8 +101,8 @@ const main = server => {
 
   server.get({ path: '/polls/:teamId/:pollId/responses', version: '1' }, async (req, res, next) => {
     try {
-      const pollsDb = getPollsDb(req)
-      const responses = await pollsDb.getPollResponses(req.params.pollId)
+      const pService = Mongo.getPollService(req)
+      const responses = await pService.getPollResponses(req.params.pollId)
 
       res.send(200, responses)
       return next()
@@ -119,8 +115,8 @@ const main = server => {
 
   server.post({ path: '/polls/:teamId/:pollId/responses', version: '1' }, async (req, res, next) => {
     try {
-      const pollsDb = getPollsDb(req)
-      const status = await pollsDb.addResponseToPoll(req.params.pollId, req.body)
+      const pService = Mongo.getPollService(req)
+      const status = await pService.addResponseToPoll(req.params.pollId, req.body)
 
       if (status.code === 409) {
         res.send(409, status.msg)
@@ -138,8 +134,8 @@ const main = server => {
 
   server.post({ path: '/polls/:teamId/:pollId/vote', version: '1' }, async (req, res, next) => {
     try {
-      const pollsDb = getPollsDb(req)
-      const status = await pollsDb.voteOnPollResponse(req.params.pollId, req.body)
+      const pService = Mongo.getPollService(req)
+      const status = await pService.voteOnPollResponse(req.params.pollId, req.body)
 
       if (status.code === 404) {
         res.send(404, status.msg)
