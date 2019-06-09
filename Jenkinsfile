@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    node {
+      label 'nodejs-lts'
+    }
+
+  }
   stages {
     stage('Primary') {
       agent any
