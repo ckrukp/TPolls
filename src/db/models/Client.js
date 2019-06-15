@@ -1,12 +1,12 @@
 const mongooseStringQuery = require('mongoose-string-query')
-const Constants = require('../../config/Constants')
+const Constants = require('../../util/config').constants
 const timestamps = require('mongoose-timestamp')
+const UIDGenerator = require('uid-generator')
 const mongoose = require('mongoose')
 const crypto = require('crypto')
 
-const UIDGenerator = require('uid-generator')
-const uidGen = new UIDGenerator(Constants.uidBaseEncoding, 38)
-const tokenGen = new UIDGenerator(UIDGenerator.BASE66, 64)
+const tokenGen = new UIDGenerator(Constants.tokenBaseEncoding, Constants.tokens.length)
+const uidGen = new UIDGenerator(Constants.uid.baseEncoding, Constants.uid.length)
 
 const ClientSchema = mongoose.Schema({
   _id: String,
