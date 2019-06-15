@@ -39,7 +39,7 @@ const main = server => {
   server.get({ path: '/teams/:teamId', version: '1' }, async (req, res, next) => {
     try {
       const tService = Mongo.getTeamService(req)
-      const team = tService.getTeam(req.params.teamId)
+      const team = await tService.getTeam(req.params.teamId)
 
       res.send(200, team)
       return next()
@@ -54,7 +54,7 @@ const main = server => {
   server.put({ path: '/teams/:teamId', version: '1' }, async (req, res, next) => {
     try {
       const tService = Mongo.getTeamService(req)
-      const newTeam = tService.updateTeam(req.params.teamId, req.body)
+      const newTeam = await tService.updateTeam(req.params.teamId, req.body)
 
       res.send(200, newTeam)
       return next()
@@ -69,7 +69,7 @@ const main = server => {
   server.del({ path: '/teams/:teamId', version: '1' }, async (req, res, next) => {
     try {
       const tService = Mongo.getTeamService(req)
-      const oldTeam = tService.deleteTeam(req.params.teamId)
+      const oldTeam = await tService.deleteTeam(req.params.teamId)
 
       res.send(200, oldTeam)
       return next()
@@ -84,7 +84,7 @@ const main = server => {
   server.get({ path: '/teams/:teamId/members', version: '1' }, async (req, res, next) => {
     try {
       const tService = Mongo.getTeamService(req)
-      const members = tService.getMembers(req.params.teamId)
+      const members = await tService.getMembers(req.params.teamId)
 
       res.send(200, members)
       return next()
@@ -99,7 +99,7 @@ const main = server => {
   server.post({ path: '/teams/:teamId/members', version: '1' }, async (req, res, next) => {
     try {
       const tService = Mongo.getTeamService(req)
-      const members = tService.addMember(req.params.teamId, req.body)
+      const members = await tService.addMember(req.params.teamId, req.body)
 
       res.send(200, members)
       return next()
