@@ -2,7 +2,6 @@ const mongooseStringQuery = require('mongoose-string-query')
 const Constants = require('../../config/Constants')
 const timestamps = require('mongoose-timestamp')
 const { Schema, model } = require('mongoose')
-const { ObjectId } = require('mongodb')
 const crypto = require('crypto')
 
 const UIDGenerator = require('uid-generator')
@@ -10,7 +9,7 @@ const uidGen = new UIDGenerator(Constants.uidBaseEncoding, 38)
 const tokenGen = new UIDGenerator(UIDGenerator.BASE66, 64)
 
 const ClientSchema = Schema({
-  _id: ObjectId,
+  _id: String,
   username: String,
   hash: String,
   salt: String,
