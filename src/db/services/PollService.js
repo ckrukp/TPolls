@@ -8,11 +8,11 @@ class PollService {
    *
    * @param {String} teamId The id of the team you wish to interact with.
    */
-  constructor (teamId) {
+  constructor (clientId, teamId) {
     if (teamId) {
-      this.Model = require('../models/Poll')(teamId)
+      this.Model = require('../models/Poll')(clientId, teamId)
     } else {
-      return new Error('You must provide a teamId in order to use the PollService.')
+      return new Error('You must provide a client and team id in order to use the PollService.')
     }
   }
 
@@ -21,11 +21,7 @@ class PollService {
    *
    * @returns {Promise<Poll[]>} An array of Polls via a Promise.
    */
-  async getPolls () {
-    try {
-      return this.Model.find()
-    } catch (err) { return err }
-  }
+  async getPolls () { return this.Model.find() }
 
   /**
    * Creates a new poll in MongoDB using the provided poll object.
@@ -34,69 +30,43 @@ class PollService {
    *
    * @returns {Promise<Poll>} The newly created Poll via a Promise.
    */
-  async createPoll (poll) {
-    try {
-      return this.Model.create(poll)
-    } catch (err) {
-      console.error(err)
-      return err
-    }
-  }
+  async createPoll (poll) { return this.Model.create(poll) }
 
   /**
    * Queries the teams collection for the poll with the provided id.
    *
-   * @param {ObjectId} pollId The id of the poll to return.
+   * @param {String} pollId The id of the poll to return.
    *
    * @returns {Promise<Poll>} The requested Poll via a Promise.
    */
-  async getPoll (pollId) {
-    try {
-      return this.Model.findById(pollId)
-    } catch (err) {
-      console.error(err)
-      return err
-    }
-  }
+  async getPoll (pollId) { return this.Model.findById(pollId) }
 
   /**
    * Updates an existing Poll with the provided id using the provided Poll as
    * the update object. Upsert is set to false, so if a Poll doesn't already
    * exist with the given id, this request will fail.
    *
-   * @param {ObjectId} pollId The id of the Poll to update.
+   * @param {String} pollId The id of the Poll to update.
    * @param {Poll} updateObj The new version of the Poll to update with.
    *
    * @returns {Promise<Poll>} The updated Poll via a Promise.
    */
   async updatePoll (pollId, updateObj) {
-    try {
-      return this.Model.findByIdAndUpdate(pollId, updateObj, { upsert: false, new: true })
-    } catch (err) {
-      console.error(err)
-      return err
-    }
+    return this.Model.findByIdAndUpdate(pollId, updateObj, { upsert: false, new: true })
   }
 
   /**
    * Deletes a poll from the current team using the given id.
    *
-   * @param {ObjectId} pollId The id of the poll to delete.
+   * @param {String} pollId The id of the poll to delete.
    */
-  async deletePollFromTeam (pollId) {
-    try {
-      return this.Model.findByIdAndDelete(pollId)
-    } catch (err) {
-      console.error(err)
-      return err
-    }
-  }
+  async deletePollFromTeam (pollId) { return this.Model.findByIdAndDelete(pollId) }
 
   /**
    * Searches the current teams collection for a poll with the given id and
    * if it exists, returns the question object associated with it.
    *
-   * @param {ObjectId} pollId The id of the poll to search for.
+   * @param {String} pollId The id of the poll to search for.
    *
    * @returns {Promise<Question>} The question posed for this poll via a Promise.
    */
@@ -115,7 +85,7 @@ class PollService {
    * Searches the current teams collection for a poll with the given id and
    * if it exists, returns the responses object associated with it.
    *
-   * @param {ObjectId} pollId The id of the poll to search for.
+   * @param {String} pollId The id of the poll to search for.
    *
    * @returns {Promise<Response[]>} An array of Responses via a Promise.
    */
@@ -133,7 +103,7 @@ class PollService {
   /**
    * Adds the given response to the poll with the given id.
    *
-   * @param {ObjectId} pollId The id of the poll to add the response to.
+   * @param {String} pollId The id of the poll to add the response to.
    * @param {Response} response The new response to add to the poll.
    *
    * @returns {Promise<Poll>} The updated Poll object via a Promise.
@@ -169,7 +139,7 @@ class PollService {
    * Casts a vote in the poll with the given id for the response that matches
    * the query provided.
    *
-   * @param {ObjectId} pollId The id of the poll to be voting in.
+   * @param {String} pollId The id of the poll to be voting in.
    * @param {ResponseQuery} response The response you wish to vote on.
    *
    * @returns {Promise<Poll>} The updated Poll via a Promise.
@@ -205,23 +175,17 @@ class PollService {
   }
 }
 
-module.exports.Polls = PollService
+module.exports = PollService
 
 // #region TypeData
 /**
  * @typedef {Object} Poll
  *
- * @prop {ObjectId} [_id] The ObjectId/MongoDB id of the poll. If empty, MongoDB generates it.
+ * @prop {String} [_id] The unique identifier of the poll.
  * @prop {String} [displayName] The name of the poll.
  * @prop {Question} question The question being posed.
  * @prop {Response[]} responses The available responses to vote on.
  * @prop {PollOpts} [options] The options for this poll.
- */
-
-/**
- * @typedef {Object} ObjectId
- *
- * @prop {String|Number} _id
  */
 
 /**
@@ -247,7 +211,7 @@ module.exports.Polls = PollService
 /**
  * @typedef {Object} ResponseQuery
  *
- * @prop {ObjectId} [_id] The id of the response.
+ * @prop {String} [_id] The unique identifier of the response.
  * @prop {String} [content] The response to the posed question.
  */
 // #endregion TypeData

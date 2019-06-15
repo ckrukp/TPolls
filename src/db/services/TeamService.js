@@ -6,11 +6,13 @@ class TeamService {
   * The constructor for the Polls class. Requires the id of the team you wish
   * to interact with in order to function.
   *
-  * @param {String} teamId The id of the team you wish to interact with.
+  * @param {String} clientId The unique identifier of the client using the API.
+  * @param {String} teamId The unique identifier of the team you wish to interact with.
   */
-  constructor (teamId) {
-    this.MemberModel = require('../models/Member')
-    this.TeamModel = require('../models/Team')
+  constructor (clientId, teamId) {
+    this.Model = require('../models/Team')(clientId)
+    this.clientId = clientId
+    this.teamId = teamId
   }
 
   /**
@@ -18,25 +20,14 @@ class TeamService {
    *
    * @returns {Promise<Team[]>} An array of Teams via a Promise.
    */
-  async getTeams () {
-    try {
-      return this.TeamModel.find()
-    } catch (err) { return err }
-  }
+  async getTeams () { return this.Model.find() }
 
   /**
    * Creates a new Team in MongoDB using the provided Team object.
    *
    * @param {Team} team The Team object to create in the DB.
    */
-  async createTeam (team) {
-    try {
-      return this.TeamModel.create(team)
-    } catch (err) {
-      console.error(err)
-      return err
-    }
-  }
+  async createTeam (team) { return this.Model.create(team) }
 
   /**
    * Gets the team with the given id from MongoDB and returns it via a Promise.
@@ -45,14 +36,7 @@ class TeamService {
    *
    * @returns {Promise<Team>} The requested Team object.
    */
-  async getTeam (teamId) {
-    try {
-      return this.TeamModel.findById(teamId)
-    } catch (err) {
-      console.error(err)
-      return err
-    }
-  }
+  async getTeam (teamId) { return this.Model.findById(teamId) }
 
   /**
    * Updates an existing Team with the provided id using the provided Team as
@@ -65,12 +49,7 @@ class TeamService {
    * @returns {Promise<Team>} The newly updated Team via a Promise.
    */
   async updateTeam (teamId, updateObj) {
-    try {
-      return this.TeamModel.findByIdAndUpdate(teamId, updateObj, { upsert: false, new: true })
-    } catch (err) {
-      console.error(err)
-      return err
-    }
+    return this.Model.findByIdAndUpdate(teamId, updateObj, { upsert: false, new: true })
   }
 
   /**
@@ -82,17 +61,12 @@ class TeamService {
    * @returns {Promise<Team>} The deleted Team object (if one is found).
    */
   async deleteTeam (teamId) {
-    try {
-      return this.TeamModel.findByIdAndDelete(teamId)
-    } catch (err) {
-      console.error(err)
-      return err
-    }
+    return this.Model.findByIdAndDelete(teamId)
   }
 
   getMembers (teamId) {
     return new Promise((resolve, reject) => {
-      this.TeamModel.findById(teamId, (err, res) => {
+      this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else resolve(res.members)
       })
@@ -101,7 +75,7 @@ class TeamService {
 
   addMember (teamId, member) {
     return new Promise((resolve, reject) => {
-      this.TeamModel.findById(teamId, (err, res) => {
+      this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
           // Add the new Member object to the current Array of Members.
@@ -116,7 +90,7 @@ class TeamService {
 
   getMember (teamId, memberId) {
     return new Promise((resolve, reject) => {
-      this.TeamModel.findById(teamId, (err, res) => {
+      this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
           // Iterate through the current list of Members searching for the one to return.
@@ -135,7 +109,7 @@ class TeamService {
 
   updateMember (teamId, memberId, updateObj) {
     return new Promise((resolve, reject) => {
-      this.TeamModel.findById(teamId, (err, res) => {
+      this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
           let newMembers = []
@@ -162,7 +136,7 @@ class TeamService {
 
   deleteMember (teamId, memberId) {
     return new Promise((resolve, reject) => {
-      this.TeamModel.findById(teamId, (err, res) => {
+      this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
           let newMembers = []

@@ -1,14 +1,14 @@
 const mongooseStringQuery = require('mongoose-string-query')
 const Constants = require('../../config/Constants')
 const timestamps = require('mongoose-timestamp')
-const { Schema, model } = require('mongoose')
+const mongoose = require('mongoose')
 const crypto = require('crypto')
 
 const UIDGenerator = require('uid-generator')
 const uidGen = new UIDGenerator(Constants.uidBaseEncoding, 38)
 const tokenGen = new UIDGenerator(UIDGenerator.BASE66, 64)
 
-const ClientSchema = Schema({
+const ClientSchema = mongoose.Schema({
   _id: String,
   username: String,
   hash: String,
@@ -20,7 +20,8 @@ const ClientSchema = Schema({
 })
 
 /**
- * Generates a id/UUID for the client and returns it as a String via a Promise.
+ * Generates a unique identifier for the client and returns it as a String via a
+ * Promise.
  *
  * @returns {Promise<String>} The generated id for the client.
  */
@@ -83,4 +84,4 @@ ClientSchema.methods.setPassword = setPassword
 ClientSchema.methods.generateToken = generateToken
 ClientSchema.methods.validatePassword = validatePassword
 
-module.exports = model('Client', ClientSchema, 'Clients')
+module.exports = mongoose.connection.useDb('config').model('Client', ClientSchema, 'Clients')

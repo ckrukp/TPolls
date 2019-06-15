@@ -18,7 +18,8 @@ const PollSchema = mongoose.Schema({
     count: Number
   }]
 })
+
 PollSchema.plugin(mongooseStringQuery)
 PollSchema.plugin(timestamps)
 
-module.exports = collection => mongoose.connection.model('Poll', PollSchema, collection)
+module.exports = (clientId, teamId) => mongoose.connection.useDb(clientId).model('Poll', PollSchema, teamId)

@@ -19,7 +19,8 @@ const TeamSchema = mongoose.Schema({
     voteCount: Number // The amount of times the member has cast a vote.
   }]
 })
+
 TeamSchema.plugin(mongooseStringQuery)
 TeamSchema.plugin(timestamps)
 
-module.exports = mongoose.connection.model('Team', TeamSchema, 'Teams')
+module.exports = clientId => mongoose.connection.useDb(clientId).model('Team', TeamSchema, 'TeamsData')

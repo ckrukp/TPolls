@@ -6,23 +6,9 @@ class ClientService {
     this.Model = require('../models/Client')
   }
 
-  async getClients () {
-    try {
-      return this.Model.find({})
-    } catch (err) {
-      console.error(err)
-      return err
-    }
-  }
+  getClients () { return this.Model.find() }
 
-  async getClient (clientId) {
-    try {
-      return this.Model.findById(clientId)
-    } catch (err) {
-      console.error(err)
-      return err
-    }
-  }
+  getClient (clientId) { return this.Model.findById(clientId) }
 
   /**
    *
@@ -44,12 +30,10 @@ class ClientService {
 module.exports = ClientService
 
 // #region TypeData
-const { ObjectId } = require('mongodb')
-
 /**
  * @typedef {Object} Client
  *
- * @prop {ObjectId} _id The unique identifier of the Client.
+ * @prop {String} _id The unique identifier of the Client.
  * @prop {String} [username]
  * @prop {String} [hash]
  * @prop {String} [salt]
