@@ -1,4 +1,4 @@
-pipeline {
+/*pipeline {
   agent {
     node {
       label 'nodejs-lts'
@@ -15,4 +15,4 @@ pipeline {
       }
     }
   }
-}
+}*/
