@@ -1,28 +1,30 @@
+const versioning = require('restify-url-semver')
 const config = require('./src/util/config')
-const restify = require('restify')
 const mongoose = require('mongoose')
+const restify = require('restify')
+const morgan = require('morgan')
 const plugins = restify.plugins
-const logOpts = {
+const log = require('simple-node-logger').createRollingFileLogger({
   logDirectory: './logs',
   fileNamePattern: 'roll-<DATE>.log',
   dateFormat: 'YYYY.MM.DD'
-}
-const log = require('simple-node-logger').createRollingFileLogger(logOpts)
-const versioning = require('restify-url-semver')
+})
 
+const SERVER_PORT = process.env.PORT || 4242
 const server = restify.createServer({
   name: config.name,
-  version: config.version
+  version: process.env.VERSION
 })
 
 server.use(plugins.jsonBodyParser({ mapParams: true }))
 server.use(plugins.acceptParser(server.acceptable))
 server.use(plugins.queryParser({ mapParams: true }))
 server.use(plugins.fullResponse())
+server.use(morgan('combined'))
 
 server.pre(versioning({ prefix: '/api' }))
 
-server.listen(config.port, () => {
+server.listen(SERVER_PORT, () => {
   mongoose.Promise = global.Promise
   mongoose.connect(config.db.uri, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true })
 
@@ -35,7 +37,7 @@ server.listen(config.port, () => {
 
   db.once('open', () => {
     require('./src/routes')(server)
-    log.info(`TPolls server is listening on port ${config.port}...`)
-    console.log(`TPolls server is listening on port ${config.port}...`)
+    log.info(`TPolls server is listening on port ${SERVER_PORT}...`)
+    console.log(`TPolls server is listening on port ${SERVER_PORT}...`)
   })
 })
