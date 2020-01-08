@@ -6,13 +6,12 @@ class TeamService {
   * The constructor for the Polls class. Requires the id of the team you wish
   * to interact with in order to function.
   *
-  * @param {String} clientId The unique identifier of the client using the API.
-  * @param {String} teamId The unique identifier of the team you wish to interact with.
+  * @param {restify.Request} req The request object to instantiate the service with.
   */
-  constructor (clientId, teamId) {
-    this.Model = require('../models/Team')(clientId)
-    this.clientId = clientId
-    this.teamId = teamId
+  constructor (req) {
+    this.Model = require('../models/Team')()
+    this.clientId = req.params.clientId
+    this.teamId = req.params.teamId
   }
 
   /**
@@ -20,14 +19,21 @@ class TeamService {
    *
    * @returns {Promise<Team[]>} An array of Teams via a Promise.
    */
-  async getTeams () { return this.Model.find() }
+  async getAllTeams () { return this.Model.find() }
+
+  /**
+   * Gets an array of Teams that have been created by the specified Client.
+   *
+   * @returns {Promise<Team[]>} An array of Teams via a Promise.
+   */
+  async getClientTeams () { return this.Model.find({ clientId: this.clientId }) }
 
   /**
    * Creates a new Team in MongoDB using the provided Team object.
    *
    * @param {Team} team The Team object to create in the DB.
    */
-  async createTeam (team) { return this.Model.create(team) }
+  async createTeam (clientId, team) { return this.Model.create({ clientId: clientId, ...team }) }
 
   /**
    * Gets the team with the given id from MongoDB and returns it via a Promise.

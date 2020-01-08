@@ -1,3 +1,4 @@
+const { verifyTokenIsAdmin, validateToken } = require('../util/auth')
 const Mongo = require('../db/index')
 
 /**
@@ -8,10 +9,15 @@ const main = server => {
   // Get a list of all the current teams.
   server.get({ path: '/teams', version: '1' }, async (req, res, next) => {
     try {
-      const tService = Mongo.getTeamService(req)
-      const teams = await tService.getTeams()
+      const isAdmin = await verifyTokenIsAdmin(req.headers['request-token'])
+      if (isAdmin) {
+        const tService = Mongo.getTeamService(req)
+        const teams = await tService.getAllTeams()
 
-      res.send(200, teams)
+        res.send(200, teams)
+      } else {
+        res.send(401, 'Only admins of the API are able to use this endpoint.')
+      }
       return next()
     } catch (err) {
       console.error(err)
@@ -21,12 +27,18 @@ const main = server => {
   })
 
   // Create a new team.
-  server.post({ path: '/teams', version: '1' }, async (req, res, next) => {
+  server.post({ path: '/teams/:clientId', version: '1' }, async (req, res, next) => {
     try {
+      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      console.log(validToken)
+      // if (isAdmin) {
       const tService = Mongo.getTeamService(req)
       const newTeam = await tService.createTeam(req.body)
 
       res.send(200, newTeam)
+      // } else {
+      //   res.send(401, 'Only admins of the API are able to use this endpoint.')
+      // }
       return next()
     } catch (err) {
       console.error(err)
