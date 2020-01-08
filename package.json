@@ -14,7 +14,7 @@
     "email": "alcha@hasslefree.solutions",
     "url": "https://hasslefree.solutions"
   },
-  "license": "MIT",
+  "license": "BSD-2-Clause",
   "dependencies": {
     "mongodb": "3.2.7",
     "mongoose": "5.6.0",
