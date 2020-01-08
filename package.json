@@ -1,18 +1,21 @@
 {
-  "name": "@hf-solutions/tpolls",
+  "name": "@4lch4/tpolls",
   "displayName": "TPolls",
-  "version": "1.0.0",
+  "version": "0.0.6",
   "description": "An API for creating and managing polls.",
   "main": "index.js",
   "scripts": {
-    "prestart": "pnpm install",
     "start": "node index.js",
     "test": "jest --passWithNoTests"
   },
   "author": {
-    "name": "Alcha",
-    "email": "alcha@hasslefree.solutions",
+    "name": "4lch4",
+    "email": "hello@4lch4.com",
     "url": "https://hasslefree.solutions"
+  },
+  "repository": {
+    "url": "https://github.com/4lch4/TPolls.git",
+    "type": "git"
   },
   "license": "BSD-2-Clause",
   "dependencies": {
