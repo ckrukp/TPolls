@@ -5,11 +5,10 @@ const UIDGenerator = require('uid-generator')
 const mongoose = require('mongoose')
 const crypto = require('crypto')
 
-const tokenGen = new UIDGenerator(Constants.tokenBaseEncoding, Constants.tokens.length)
-const uidGen = new UIDGenerator(Constants.uid.baseEncoding, Constants.uid.length)
+const tokenGen = new UIDGenerator(Constants.tokens.baseEncoding, Constants.tokens.length)
+// const uidGen = new UIDGenerator(Constants.uid.baseEncoding, Constants.uid.length)
 
 const ClientSchema = mongoose.Schema({
-  _id: String,
   username: String,
   hash: String,
   salt: String,
@@ -18,23 +17,6 @@ const ClientSchema = mongoose.Schema({
     expires: String
   }
 })
-
-/**
- * Generates a unique identifier for the client and returns it as a String via a
- * Promise.
- *
- * @returns {Promise<String>} The generated id for the client.
- */
-const generateId = async () => {
-  try {
-    this._id = await uidGen.generate()
-
-    return this._id
-  } catch (err) {
-    console.error(err)
-    return err
-  }
-}
 
 const generateToken = async () => {
   try {
@@ -54,7 +36,7 @@ const generateToken = async () => {
   }
 }
 
-const setPassword = async password => {
+const generatePassword = async password => {
   this.salt = crypto.randomBytes(16).toString('hex')
   return new Promise((resolve, reject) => {
     crypto.pbkdf2(password, this.salt, 10000, 512, 'sha512', (err, key) => {
@@ -79,9 +61,8 @@ const validatePassword = async password => {
 ClientSchema.plugin(mongooseStringQuery)
 ClientSchema.plugin(timestamps)
 
-ClientSchema.methods.generateId = generateId
-ClientSchema.methods.setPassword = setPassword
 ClientSchema.methods.generateToken = generateToken
 ClientSchema.methods.validatePassword = validatePassword
 
-module.exports = mongoose.connection.useDb('config').model('Client', ClientSchema, 'Clients')
+module.exports.generatePassword = generatePassword
+module.exports = mongoose.connection.model('Client', ClientSchema, 'Clients')

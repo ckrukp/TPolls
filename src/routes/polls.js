@@ -24,7 +24,7 @@ const main = server => {
     }
   })
 
-  // Creates a new poll for zthe given team using the given NewPoll object.
+  // Creates a new poll for the given team using the given NewPoll object.
   server.post({ path: '/polls/:teamId', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)

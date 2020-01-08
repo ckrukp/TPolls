@@ -32,7 +32,27 @@ class ClientService {
    *
    * @returns {Promise<Client>}
    */
-  createClient (client) { return this.Model.create(client) }
+  async createClient (client) {
+    const pass = await generatePassword(client.hash)
+
+    return new Promise((resolve, reject) => {
+      this.Model.findOne({ username: client.username }, (err, res) => {
+        if (err) reject(err)
+        else {
+          if (res) {
+            reject(new Error('User already exists with this username.'))
+          } else {
+            client.hash = pass.hash
+            client.salt = pass.salt
+            resolve(this.Model.create(client))
+          }
+        }
+      })
+    })
+
+    // client.hash = this.Model.setPassword(client.hash)
+    // return this.Model.create(client)
+  }
 
   /**
    * Delets an existing Client from the MongoDB backend and then returns the
@@ -56,14 +76,30 @@ class ClientService {
 
 module.exports = ClientService
 
+const crypto = require('crypto')
+const generatePassword = async password => {
+  const salt = crypto.randomBytes(16).toString('hex')
+  return new Promise((resolve, reject) => {
+    crypto.pbkdf2(password, salt, 10000, 512, 'sha512', (err, key) => {
+      if (err) reject(err)
+      else {
+        this.hash = key.toString('hex')
+        resolve({
+          hash: key.toString('hex'),
+          salt: salt
+        })
+      }
+    })
+  })
+}
+
 // #region TypeData
 /**
  * @typedef {Object} Client Represents a user of the TPolls API.
  *
  * @prop {String} _id The unique identifier of the Client.
  * @prop {String} username The display name/login name of the user.
- * @prop {String} [hash] The stored hash of the users password.
- * @prop {String} [salt] The salt used to hash the users password.
+ * @prop {String} hash The stored hash of the users password.
  * @prop {Token} [token] The Token object used to access the API.
  */
 
