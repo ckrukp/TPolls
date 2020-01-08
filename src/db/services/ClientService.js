@@ -37,7 +37,7 @@ class ClientService {
 
     return new Promise((resolve, reject) => {
       this.Model.findOne({ username: client.username }, (err, res) => {
-        if (err) reject(err)
+        if (err) reject(err) // Internal error
         else {
           if (res) {
             reject(new Error('User already exists with this username.'))
@@ -55,7 +55,7 @@ class ClientService {
   }
 
   /**
-   * Delets an existing Client from the MongoDB backend and then returns the
+   * Deletes an existing Client from the MongoDB backend and then returns the
    * object that was deleted via a Promise.
    *
    * @param {String} clientId The identifier of the Client you wish to delete.
@@ -71,7 +71,21 @@ class ClientService {
    * @param {String} clientId The identifier of the Client you wish to update.
    * @param {Client} updateObj The new version of the Client to be stored.
    */
-  updateClient (clientId, updateObj) { return this.Model.findByIdAndUpdate(clientId, updateObj) }
+  updateClient (clientId, updateObj) { return this.Model.findByIdAndUpdate(clientId, updateObj, { new: true }) }
+
+  getClientToken (clientId) {
+    return new Promise((resolve, reject) => {
+      this.Model.findById(clientId, (err, res) => {
+        if (err) reject(err)
+        else {
+          if (res) resolve(res.token)
+          else resolve(null)
+        }
+      })
+    })
+  }
+
+  updateClientToken (clientId, token) { return this.Model.findByIdAndUpdate(clientId, { token: token }, { new: true }) }
 }
 
 module.exports = ClientService
