@@ -30,7 +30,7 @@
     "uid-generator": "^2.0.0"
   },
   "devDependencies": {
-    "jest": "24.9.0"
-    "standard": "14.3.1",
+    "jest": "24.9.0",
+    "standard": "14.3.1"
   }
 }
