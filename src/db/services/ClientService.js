@@ -1,3 +1,5 @@
+const { generateToken } = require('../../util/auth')
+
 /**
  * The class for interacting with the Clients stored in the MongoDB backend.
  */
@@ -44,7 +46,10 @@ class ClientService {
           } else {
             client.hash = pass.hash
             client.salt = pass.salt
-            resolve(this.Model.create(client))
+            generateToken().then(token => {
+              client.token = token
+              resolve(this.Model.create(client))
+            }).catch(err => reject(err)) // Internal error
           }
         }
       })
