@@ -7,6 +7,7 @@ const Mongo = require('../db/index')
  */
 const main = server => {
   // GET /api/v1/clients
+  // Retrieve a list of all currently created Clients.
   server.get({ path: '/clients', version: '1' }, async (req, res, next) => {
     try {
       const cService = Mongo.getClientService()
@@ -21,6 +22,7 @@ const main = server => {
   })
 
   // POST /api/v1/clients
+  // Create a new Client.
   server.post({ path: '/clients', version: '1' }, async (req, res, next) => {
     try {
       const cService = Mongo.getClientService()
@@ -35,6 +37,7 @@ const main = server => {
   })
 
   // GET /api/v1/clients/:clientId
+  // Retrieve an existing Client by ID.
   server.get({ path: '/clients/:clientId', version: '1' }, async (req, res, next) => {
     try {
       const cService = Mongo.getClientService()
@@ -49,6 +52,7 @@ const main = server => {
   })
 
   // PUT /api/v1/clients/:clientId
+  // Update an existing Client by ID.
   server.put({ path: '/clients/:clientId', version: '1' }, async (req, res, next) => {
     try {
       const cService = Mongo.getClientService()
@@ -63,6 +67,7 @@ const main = server => {
   })
 
   // DELETE /api/v1/clients/:clientId
+  // Delete an existing Client by ID.
   server.del({ path: '/clients/:clientId', version: '1' }, async (req, res, next) => {
     try {
       const cService = Mongo.getClientService()
@@ -77,6 +82,7 @@ const main = server => {
   })
 
   // GET /api/v1/clients/:clientId/token
+  // Retrieve the token for the given Client.
   server.get({ path: '/clients/:clientId/token', version: '1' }, async (req, res, next) => {
     try {
       const cService = Mongo.getClientService()
@@ -91,6 +97,7 @@ const main = server => {
   })
 
   // PUT /api/v1/clients/:clientId/token
+  // Update the token for the given Client.
   server.put({ path: '/clients/:clientId/token', version: '1' }, async (req, res, next) => {
     try {
       const cService = Mongo.getClientService()
