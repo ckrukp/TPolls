@@ -90,7 +90,7 @@ class ClientService {
     })
   }
 
-  updateClientToken (clientId, token) { return this.Model.findByIdAndUpdate(clientId, { token: token }, { new: true }) }
+  updateClientToken (clientId, token) { return this.Model.findByIdAndUpdate(clientId, token, { new: true }) }
 }
 
 module.exports = ClientService

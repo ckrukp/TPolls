@@ -8,7 +8,11 @@ const ClientSchema = mongoose.Schema({
   hash: String,
   salt: String,
   token: String,
-  dasAdmin: Boolean
+  dasAdmin: {
+    type: Boolean,
+    required: false,
+    default: false
+  }
 })
 
 const generatePassword = async (password, salt) => {
