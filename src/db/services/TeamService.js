@@ -74,7 +74,8 @@ class TeamService {
     return new Promise((resolve, reject) => {
       this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
-        else resolve(res.members)
+        else if (res) resolve(res.members)
+        else resolve(res)
       })
     })
   }
@@ -88,7 +89,7 @@ class TeamService {
           res.members.push(member)
 
           // Send the newly updated Team object to the updateTeam method to store the changes.
-          resolve(this.updateTeam(teamId, res))
+          resolve(this.updateTeam(teamId, { members: res.members }))
         }
       })
     })
@@ -134,7 +135,7 @@ class TeamService {
           }
 
           res.members = newMembers
-          resolve(this.updateTeam(teamId, res))
+          resolve(this.updateTeam(teamId, { members: res.members }))
         }
       })
     })
