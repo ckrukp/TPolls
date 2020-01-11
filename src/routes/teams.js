@@ -27,8 +27,8 @@ const main = server => {
     }
   })
 
-  // Get a list of all the teams created by a specific client.
-  server.get({ path: '/teams/:clientId', version: '1' }, async (req, res, next) => {
+  // POST /api/v1/teams/:clientId
+  // Create a new team.
     try {
       const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
 
@@ -48,8 +48,8 @@ const main = server => {
     }
   })
 
-  // Create a new team.
-  server.post({ path: '/teams/:clientId', version: '1' }, async (req, res, next) => {
+  // GET /api/v1/teams/:clientId
+  // Get a list of all the teams created by a specific client.
     try {
       const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
 
@@ -69,6 +69,7 @@ const main = server => {
     }
   })
 
+  // GET /api/v1/teams/:clientId/:teamId
   // Get a specific team.
   server.get({ path: '/teams/:teamId', version: '1' }, async (req, res, next) => {
     try {
@@ -90,6 +91,7 @@ const main = server => {
     }
   })
 
+  // PUT /api/v1/teams/:clientId/:teamId
   // Update an existing team.
   server.put({ path: '/teams/:teamId', version: '1' }, async (req, res, next) => {
     try {
@@ -111,6 +113,7 @@ const main = server => {
     }
   })
 
+  // DELETE /api/v1/teams/:clientId/:teamId
   // Delete an existing team.
   server.del({ path: '/teams/:teamId', version: '1' }, async (req, res, next) => {
     try {
@@ -132,6 +135,7 @@ const main = server => {
     }
   })
 
+  // GET /api/v1/teams/:clientId/:teamId/members
   // Get the list of members currently in the team.
   server.get({ path: '/teams/:teamId/members', version: '1' }, async (req, res, next) => {
     try {
@@ -153,6 +157,7 @@ const main = server => {
     }
   })
 
+  // POST /api/v1/teams/:clientId/:teamId/members
   // Create/add a new member to the team.
   server.post({ path: '/teams/:teamId/members', version: '1' }, async (req, res, next) => {
     try {
@@ -174,6 +179,7 @@ const main = server => {
     }
   })
 
+  // GET /api/v1/teams/:clientId/:teamId/members/:memberId
   // Get the information of a specific team member.
   server.get({ path: '/teams/:teamId/members/:memberId', version: '1' }, async (req, res, next) => {
     try {
@@ -195,6 +201,7 @@ const main = server => {
     }
   })
 
+  // PUT /api/v1/teams/:clientId/:teamId/members/:memberId
   // Update the information of an existing team member.
   server.put({ path: '/teams/:teamId/members/:memberId', version: '1' }, async (req, res, next) => {
     try {
@@ -216,6 +223,7 @@ const main = server => {
     }
   })
 
+  // DELETE /api/v1/teams/:clientId/:teamId/members/:memberId
   // Delete an existing team member from the team.
   server.del({ path: '/teams/:teamId/members/:memberId', version: '1' }, async (req, res, next) => {
     try {
