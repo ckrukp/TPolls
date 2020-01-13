@@ -18,6 +18,12 @@
     "type": "git"
   },
   "license": "BSD-2-Clause",
+  "bugs": {
+    "email": "bugs@tpolls.app",
+    "url": "https://tpolls.app"
+  },
+  "homepage": "https://tpolls.app",
+  "readme": "README.md",
   "dependencies": {
     "mongodb": "3.4.1",
     "mongoose": "5.8.7",
