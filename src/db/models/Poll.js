@@ -14,6 +14,10 @@ const PollSchema = mongoose.Schema({
     description: String
   },
   responses: [{
+    _id: {
+      type: String,
+      required: true
+    },
     content: String,
     count: Number
   }]

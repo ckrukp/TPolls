@@ -9,7 +9,7 @@ class PollService {
    * @param {String} teamId The id of the team you wish to interact with.
    */
   constructor (clientId, teamId) {
-    if (teamId) {
+    if (clientId && teamId) {
       this.Model = require('../models/Poll')(clientId, teamId)
     } else {
       return new Error('You must provide a client and team id in order to use the PollService.')

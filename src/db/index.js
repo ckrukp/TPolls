@@ -8,7 +8,7 @@ const TeamService = require('./services/TeamService')
  *
  * @param {restify.Request} req The request object to instantiate the service with.
  */
-const getPollService = req => new PollService(req.params.teamId)
+const getPollService = req => new PollService(req.params.clientId, req.params.teamId)
 
 /**
  * Get the TeamService class which is used for interacting with the MongoDB
