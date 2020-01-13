@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const crypto = require('crypto')
 
 const ClientSchema = mongoose.Schema({
+  _id: String,
   username: String,
   hash: String,
   salt: String,

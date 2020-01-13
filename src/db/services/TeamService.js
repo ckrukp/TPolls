@@ -1,3 +1,5 @@
+const uuid = require('uuid/v4')
+
 /**
  * The class for interacting with the Teams stored in the MongoDB backend.
  */
@@ -80,15 +82,18 @@ class TeamService {
     })
   }
 
-  addMember (teamId, member) {
+  addMember (teamId, memberData) {
     return new Promise((resolve, reject) => {
       this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
           // Add the new Member object to the current Array of Members.
-          res.members.push(member)
+          res.members.push({
+            _id: uuid(),
+            ...memberData
+          })
 
-          // Send the newly updated Team object to the updateTeam method to store the changes.
+          // Send the newly updated Members object to the updateTeam method to store the changes.
           resolve(this.updateTeam(teamId, { members: res.members }))
         }
       })
@@ -119,7 +124,8 @@ class TeamService {
       this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
-          let newMembers = []
+          let newMembersData = []
+
           // Iterate through the current list of Members searching for the one to update.
           for (const member of res.members) {
             // If the ids match, we've found the Member to update.
@@ -131,11 +137,10 @@ class TeamService {
               if (member.voteCount !== updateObj.voteCount) { member.voteCount = updateObj.voteCount }
             }
 
-            newMembers.push(member)
+            newMembersData.push(member)
           }
 
-          res.members = newMembers
-          resolve(this.updateTeam(teamId, { members: res.members }))
+          resolve(this.updateTeam(teamId, { members: newMembersData }))
         }
       })
     })

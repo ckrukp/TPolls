@@ -1,4 +1,5 @@
 const { generateToken } = require('../../util/auth')
+const uuid = require('uuid/v4')
 
 /**
  * The class for interacting with the Clients stored in the MongoDB backend.
@@ -44,6 +45,7 @@ class ClientService {
           if (res) {
             reject(new Error('User already exists with this username.'))
           } else {
+            client._id = uuid()
             client.hash = pass.hash
             client.salt = pass.salt
             generateToken().then(token => {
