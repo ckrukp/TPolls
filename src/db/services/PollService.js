@@ -175,7 +175,7 @@ class PollService {
       for (let x = 0; x < ogPoll.responses.length; x++) {
         const tmpRes = ogPoll.responses[x]
 
-        if (tmpRes.content === response.content || tmpRes._id.toString() === response._id) {
+        if (tmpRes.content === response.content || tmpRes._id === response._id) {
           ogPoll.responses[x].count++
           voted = true
         }

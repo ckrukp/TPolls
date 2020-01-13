@@ -76,3 +76,11 @@ module.exports.validatePassword = validatePassword
 module.exports.validateToken = validateToken
 module.exports.verifyTokenIsAdmin = verifyTokenIsAdmin
 module.exports.verifyClientIdIsAdmin = verifyClientIdIsAdmin
+
+// module.exports = {
+//   validateToken: validateToken,
+//   generateToken: generateToken,
+//   validatePassword: validatePassword,
+//   verifyTokenIsAdmin: verifyTokenIsAdmin,
+//   verifyClientIdIsAdmin: verifyClientIdIsAdmin
+// }
