@@ -1,16 +1,9 @@
-// #region TypeData
-const restify = require('restify') // Used for type data
-// #endregion TypeData
-
 const Mongo = require('../db')
 
-/**
- *
- * @param {restify.Server} server The server object.
- */
 const main = server => {
+  // GET /api/v1/polls/:clientId/:teamId
   // Returns all polls currently created for the given team.
-  server.get({ path: '/polls/:teamId', version: '1' }, async (req, res, next) => {
+  server.get({ path: '/polls/:clientId/:teamId', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)
       const polls = await pService.getPolls()
@@ -24,8 +17,9 @@ const main = server => {
     }
   })
 
+  // POST /api/v1/polls/:clientId/:teamId
   // Creates a new poll for the given team using the given NewPoll object.
-  server.post({ path: '/polls/:teamId', version: '1' }, async (req, res, next) => {
+  server.post({ path: '/polls/:clientId/:teamId', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)
       const newPoll = await pService.createPoll(req.body)
@@ -39,11 +33,15 @@ const main = server => {
     }
   })
 
-  server.del({ path: '/polls/:teamId', version: '1' }, async (req, res, next) => {
+  // DELETE /api/v1/polls/:clientId/:teamId
+  // Delete all polls that exist for a given Team.
+  server.del({ path: '/polls/:clientId/:teamId', version: '1' }, async (req, res, next) => {
     // Add step to verify the requesting user is an admin of sorts.
   })
 
-  server.get({ path: '/polls/:teamId/:pollId', version: '1' }, async (req, res, next) => {
+  // GET /api/v1/polls/:clientId/:teamId/:pollId
+  // Get a specific poll by id.
+  server.get({ path: '/polls/:clientId/:teamId/:pollId', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)
       const poll = await pService.getPoll(req.params.pollId)
@@ -57,7 +55,9 @@ const main = server => {
     }
   })
 
-  server.put({ path: '/polls/:teamId/:pollId', version: '1' }, async (req, res, next) => {
+  // PUT /api/v1/polls/:clientId/:teamId/:pollId
+  // Update the information an existing poll.
+  server.put({ path: '/polls/:clientId/:teamId/:pollId', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)
       const updatedPoll = await pService.updatePoll(req.params.pollId, req.body)
@@ -71,7 +71,9 @@ const main = server => {
     }
   })
 
-  server.del({ path: '/polls/:teamId/:pollId', version: '1' }, async (req, res, next) => {
+  // DELETE /api/v1/polls/:clientId/:teamId/:pollId
+  // Delete an existing poll.
+  server.del({ path: '/polls/:clientId/:teamId/:pollId', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)
       const dRes = await pService.deletePollFromTeam(req.params.pollId)
@@ -85,7 +87,9 @@ const main = server => {
     }
   })
 
-  server.get({ path: '/polls/:teamId/:pollId/question', version: '1' }, async (req, res, next) => {
+  // GET /api/v1/polls/:clientId/:teamId/:pollId/question
+  // Get the question for an existing Poll.
+  server.get({ path: '/polls/:clientId/:teamId/:pollId/question', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)
       const question = await pService.getPollQuestion(req.params.pollId)
@@ -99,7 +103,9 @@ const main = server => {
     }
   })
 
-  server.get({ path: '/polls/:teamId/:pollId/responses', version: '1' }, async (req, res, next) => {
+  // GET /api/v1/polls/:clientId/:teamId/:pollId/responses
+  // Get all of the available responses for an existing poll.
+  server.get({ path: '/polls/:clientId/:teamId/:pollId/responses', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)
       const responses = await pService.getPollResponses(req.params.pollId)
@@ -113,7 +119,9 @@ const main = server => {
     }
   })
 
-  server.post({ path: '/polls/:teamId/:pollId/responses', version: '1' }, async (req, res, next) => {
+  // POST /api/v1/polls/:clientId/:teamId/:pollId/responses
+  // Add a new possible response to an existing poll.
+  server.post({ path: '/polls/:clientId/:teamId/:pollId/responses', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)
       const status = await pService.addResponseToPoll(req.params.pollId, req.body)
@@ -132,7 +140,9 @@ const main = server => {
     }
   })
 
-  server.post({ path: '/polls/:teamId/:pollId/vote', version: '1' }, async (req, res, next) => {
+  // POST /api/v1/polls/:clientId/:teamId/:pollId/vote
+  // Cast a vote on an existing poll.
+  server.post({ path: '/polls/:clientId/:teamId/:pollId/vote', version: '1' }, async (req, res, next) => {
     try {
       const pService = Mongo.getPollService(req)
       const status = await pService.voteOnPollResponse(req.params.pollId, req.body)
