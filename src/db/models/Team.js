@@ -3,6 +3,7 @@ const timestamps = require('mongoose-timestamp')
 const mongoose = require('mongoose')
 
 const TeamSchema = mongoose.Schema({
+  _id: String,
   clientId: {
     type: String,
     required: true

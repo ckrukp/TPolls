@@ -33,9 +33,25 @@ class TeamService {
   /**
    * Creates a new Team in MongoDB using the provided Team object.
    *
+   * @param {String} clientId The id of the Client to add the Team to.
    * @param {Team} team The Team object to create in the DB.
    */
-  async createTeam (clientId, team) { return this.Model.create({ clientId: clientId, ...team }) }
+  async createTeam (clientId, team) {
+    if (!team._id) team._id = uuid()
+
+    if (team.members) {
+      const members = []
+
+      for (const member of team.members) {
+        if (!member._id) member._id = uuid()
+        members.push(member)
+      }
+
+      team.members = members
+    }
+
+    return this.Model.create({ clientId: clientId, ...team })
+  }
 
   /**
    * Gets the team with the given id from MongoDB and returns it via a Promise.
@@ -124,7 +140,7 @@ class TeamService {
       this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
-          let newMembersData = []
+          const newMembersData = []
 
           // Iterate through the current list of Members searching for the one to update.
           for (const member of res.members) {
@@ -151,7 +167,7 @@ class TeamService {
       this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
-          let newMembers = []
+          const newMembers = []
           for (const member of res.members) {
             if (member._id !== memberId) newMembers.push(member)
           }
