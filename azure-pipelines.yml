@@ -17,4 +17,23 @@ steps:
 
 - script: |
     pnpm install
+    pnpm test
   displayName: 'pnpm install'
+
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'HFCWEB01'
+    contents: '**'
+    targetFolder: '/home/alcha/tpolls'
+    cleanTargetFolder: true
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'HFCWEB01'
+    runOptions: 'commands'
+    commands: |
+      cd /home/alcha/tpolls
+      mkdir logs
+      pnpm i
+      cp ../.config/tpolls ./src/util/config.js
+      pm2 start pm2.config.js
