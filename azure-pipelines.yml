@@ -33,5 +33,5 @@ steps:
     commands: |
       cd /home/alcha/tpolls
       /home/alcha/.nvm/versions/node/v10.18.1/bin/pnpm i
-      cp /home/alcha/.config/tpolls /home/alcha/tpolls/src/util/config.js
+      cp ../.config/tpolls ./src/util/config.js
       /home/alcha/.nvm/versions/node/v10.18.1/bin/pm2 start pm2.config.js
