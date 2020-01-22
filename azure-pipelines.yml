@@ -1,0 +1,39 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  name: 'HFP'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    pnpm install
+    pnpm test
+  displayName: 'pnpm install'
+
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'HFCWEB01'
+    contents: '**'
+    targetFolder: '/home/alcha/tpolls'
+    cleanTargetFolder: true
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'HFCWEB01'
+    runOptions: 'commands'
+    commands: |
+      cd /home/alcha/tpolls
+      mkdir logs
+      pnpm i
+      cp ../.config/tpolls ./src/util/config.js
+      pm2 start pm2.config.js
