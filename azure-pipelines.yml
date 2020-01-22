@@ -31,13 +31,3 @@ steps:
     sshEndpoint: 'HFCWEB01'
     contents: '**'
     targetFolder: '/home/alcha/tpolls'
-
-- task: SSH@0
-  inputs:
-    sshEndpoint: 'HFCWEB01'
-    runOptions: 'commands'
-    commands: |
-      cd /home/alcha/tpolls
-      /home/alcha/.nvm/versions/node/v10.18.1/bin/pnpm i
-      cp ../.config/tpolls ./src/util/config.js
-      /home/alcha/.nvm/versions/node/v10.18.1/bin/pm2 start pm2.config.js
