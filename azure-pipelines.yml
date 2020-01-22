@@ -32,7 +32,7 @@ steps:
     runOptions: 'commands'
     commands: |
       cd /home/alcha/tpolls
-      mkdir logs
+      mkdir -p logs
       pnpm i
       cp ../.config/tpolls ./src/util/config.js
       pm2 start pm2.config.js
