@@ -10,7 +10,7 @@ const main = server => {
   // Get a list of all the current teams.
   server.get({ path: '/teams', version: '1' }, async (req, res, next) => {
     try {
-      const isAdmin = await verifyTokenIsAdmin(req.headers['request-token'])
+      const isAdmin = await verifyTokenIsAdmin(req.headers['api-key'])
 
       if (!isAdmin) res.send(401, 'Only admins of the API are able to use this endpoint.')
       else {
@@ -32,7 +32,7 @@ const main = server => {
   // Create a new team.
   server.post({ path: '/teams/:clientId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -54,7 +54,7 @@ const main = server => {
   // Get a list of all the teams created by a specific client.
   server.get({ path: '/teams/:clientId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -76,7 +76,7 @@ const main = server => {
   // Get a specific team.
   server.get({ path: '/teams/:clientId/:teamId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -98,7 +98,7 @@ const main = server => {
   // Update an existing team.
   server.put({ path: '/teams/:clientId/:teamId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -120,7 +120,7 @@ const main = server => {
   // Delete an existing team.
   server.del({ path: '/teams/:clientId/:teamId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -142,7 +142,7 @@ const main = server => {
   // Get the list of members currently in the team.
   server.get({ path: '/teams/:clientId/:teamId/members', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -164,7 +164,7 @@ const main = server => {
   // Create/add a new member to the team.
   server.post({ path: '/teams/:clientId/:teamId/members', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -186,7 +186,7 @@ const main = server => {
   // Get the information of a specific team member.
   server.get({ path: '/teams/:clientId/:teamId/members/:memberId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -208,7 +208,7 @@ const main = server => {
   // Update the information of an existing team member.
   server.put({ path: '/teams/:clientId/:teamId/members/:memberId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -230,7 +230,7 @@ const main = server => {
   // Delete an existing team member from the team.
   server.del({ path: '/teams/:clientId/:teamId/members/:memberId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {

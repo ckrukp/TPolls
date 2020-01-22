@@ -7,7 +7,7 @@ const main = server => {
   // Returns all polls currently created for the given team.
   server.get({ path: '/polls/:clientId/:teamId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -29,7 +29,7 @@ const main = server => {
   // Creates a new poll for the given team using the given NewPoll object.
   server.post({ path: '/polls/:clientId/:teamId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -53,24 +53,24 @@ const main = server => {
   server.del({ path: '/polls/:clientId/:teamId', version: '1' }, async (req, res, next) => {
     res.send(501, 'This endpoint has not been implemented yet.')
     return next()
-    // try {
-    //   const validToken = await verifyTokenIsAdmin(req.headers['request-token'])
-    //   if (!validToken) res.send(401)
-    //   else {
+    try {
+      const validToken = await verifyTokenIsAdmin(req.headers['api-key'])
+      if (!validToken) res.send(401)
+      else {
 
-    //   }
-    // } catch (err) {
-    //   log.error(err)
-    //   res.send(500, err)
-    //   return next(err)
-    // }
+      }
+    } catch (err) {
+      log.error(err)
+      res.send(500, err)
+      return next(err)
+    }
   })
 
   // GET /api/v1/polls/:clientId/:teamId/:pollId
   // Get a specific poll by id.
   server.get({ path: '/polls/:clientId/:teamId/:pollId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -92,7 +92,7 @@ const main = server => {
   // Update the information an existing poll.
   server.put({ path: '/polls/:clientId/:teamId/:pollId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -114,7 +114,7 @@ const main = server => {
   // Delete an existing poll.
   server.del({ path: '/polls/:clientId/:teamId/:pollId', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -135,7 +135,7 @@ const main = server => {
   // Get the question for an existing Poll.
   server.get({ path: '/polls/:clientId/:teamId/:pollId/question', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -156,7 +156,7 @@ const main = server => {
   // Get all of the available responses for an existing poll.
   server.get({ path: '/polls/:clientId/:teamId/:pollId/responses', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -177,7 +177,7 @@ const main = server => {
   // Add a new possible response to an existing poll.
   server.post({ path: '/polls/:clientId/:teamId/:pollId/responses', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
@@ -203,7 +203,7 @@ const main = server => {
   // Cast a vote on an existing poll.
   server.post({ path: '/polls/:clientId/:teamId/:pollId/vote', version: '1' }, async (req, res, next) => {
     try {
-      const validToken = await validateToken(req.params.clientId, req.headers['request-token'])
+      const validToken = await validateToken(req.params.clientId, req.headers['api-key'])
 
       if (!validToken) res.send(401, 'The token you provided was either invalid or does not match the provided clientId.')
       else {
