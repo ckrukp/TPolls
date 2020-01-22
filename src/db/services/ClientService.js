@@ -1,3 +1,6 @@
+const { generateToken } = require('../../util/auth')
+const uuid = require('uuid/v4')
+
 /**
  * The class for interacting with the Clients stored in the MongoDB backend.
  */
@@ -32,10 +35,34 @@ class ClientService {
    *
    * @returns {Promise<Client>}
    */
-  createClient (client) { return this.Model.create(client) }
+  async createClient (client) {
+    const pass = await generatePassword(client.hash)
+
+    return new Promise((resolve, reject) => {
+      this.Model.findOne({ username: client.username }, (err, res) => {
+        if (err) reject(err) // Internal error
+        else {
+          if (res) {
+            reject(new Error('User already exists with this username.'))
+          } else {
+            client._id = uuid()
+            client.hash = pass.hash
+            client.salt = pass.salt
+            generateToken().then(token => {
+              client.token = token
+              resolve(this.Model.create(client))
+            }).catch(err => reject(err)) // Internal error
+          }
+        }
+      })
+    })
+
+    // client.hash = this.Model.setPassword(client.hash)
+    // return this.Model.create(client)
+  }
 
   /**
-   * Delets an existing Client from the MongoDB backend and then returns the
+   * Deletes an existing Client from the MongoDB backend and then returns the
    * object that was deleted via a Promise.
    *
    * @param {String} clientId The identifier of the Client you wish to delete.
@@ -51,10 +78,41 @@ class ClientService {
    * @param {String} clientId The identifier of the Client you wish to update.
    * @param {Client} updateObj The new version of the Client to be stored.
    */
-  updateClient (clientId, updateObj) { return this.Model.findByIdAndUpdate(clientId, updateObj) }
+  updateClient (clientId, updateObj) { return this.Model.findByIdAndUpdate(clientId, updateObj, { new: true }) }
+
+  getClientToken (clientId) {
+    return new Promise((resolve, reject) => {
+      this.Model.findById(clientId, (err, res) => {
+        if (err) reject(err)
+        else {
+          if (res) resolve(res.token)
+          else resolve(null)
+        }
+      })
+    })
+  }
+
+  updateClientToken (clientId, token) { return this.Model.findByIdAndUpdate(clientId, token, { new: true }) }
 }
 
 module.exports = ClientService
+
+const crypto = require('crypto')
+const generatePassword = async password => {
+  const salt = crypto.randomBytes(16).toString('hex')
+  return new Promise((resolve, reject) => {
+    crypto.pbkdf2(password, salt, 10000, 512, 'sha512', (err, key) => {
+      if (err) reject(err)
+      else {
+        this.hash = key.toString('hex')
+        resolve({
+          hash: key.toString('hex'),
+          salt: salt
+        })
+      }
+    })
+  })
+}
 
 // #region TypeData
 /**
@@ -62,8 +120,7 @@ module.exports = ClientService
  *
  * @prop {String} _id The unique identifier of the Client.
  * @prop {String} username The display name/login name of the user.
- * @prop {String} [hash] The stored hash of the users password.
- * @prop {String} [salt] The salt used to hash the users password.
+ * @prop {String} hash The stored hash of the users password.
  * @prop {Token} [token] The Token object used to access the API.
  */
 

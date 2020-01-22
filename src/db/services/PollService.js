@@ -1,3 +1,5 @@
+const uuid = require('uuid/v4')
+
 /**
  * The base class for interacting with the Polls stored in the MongoDB backend.
  */
@@ -9,7 +11,7 @@ class PollService {
    * @param {String} teamId The id of the team you wish to interact with.
    */
   constructor (clientId, teamId) {
-    if (teamId) {
+    if (clientId && teamId) {
       this.Model = require('../models/Poll')(clientId, teamId)
     } else {
       return new Error('You must provide a client and team id in order to use the PollService.')
@@ -30,7 +32,27 @@ class PollService {
    *
    * @returns {Promise<Poll>} The newly created Poll via a Promise.
    */
-  async createPoll (poll) { return this.Model.create(poll) }
+  createPoll (poll) {
+    return new Promise((resolve, reject) => {
+      this.Model.findOne({ displayName: poll.displayName }, (err, res) => {
+        if (err) reject(err)
+        else if (res) resolve(new Error('A poll already exists with this displayName.'))
+        else {
+          if (!poll._id) poll._id = uuid()
+          const responses = []
+
+          for (const response of poll.responses) {
+            if (!response._id) response._id = uuid()
+            responses.push(response)
+          }
+
+          poll.responses = responses
+
+          resolve(this.Model.create(poll))
+        }
+      })
+    })
+  }
 
   /**
    * Queries the teams collection for the poll with the provided id.
@@ -126,8 +148,9 @@ class PollService {
           msg: 'This poll already has a response with the same content. Please submit a response with a different content value.'
         }
       } else {
+        if (!response._id) response._id = uuid()
         ogPoll.responses.push(response)
-        return this.Model.findByIdAndUpdate(pollId, ogPoll, { new: true, upsert: false })
+        return this.Model.findByIdAndUpdate(pollId, { responses: ogPoll.responses }, { new: true, upsert: false })
       }
     } catch (err) {
       console.error(err)
@@ -152,20 +175,20 @@ class PollService {
       for (let x = 0; x < ogPoll.responses.length; x++) {
         const tmpRes = ogPoll.responses[x]
 
-        if (tmpRes.content === response.content || tmpRes['_id'].toString() === response['_id']) {
+        if (tmpRes.content === response.content || tmpRes._id === response._id) {
           ogPoll.responses[x].count++
           voted = true
         }
       }
 
       if (voted) {
-        const nsPoll = await this.updatePoll(pollId, ogPoll)
+        const nsPoll = await this.updatePoll(pollId, { responses: ogPoll.responses })
 
         return nsPoll
       } else {
         return {
           code: 404,
-          msg: "A response with the given content couldn't be located."
+          msg: "A response couldn't be located with the given content or id."
         }
       }
     } catch (err) {

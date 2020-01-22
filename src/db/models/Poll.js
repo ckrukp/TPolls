@@ -1,4 +1,3 @@
-const mongooseStringQuery = require('mongoose-string-query')
 const timestamps = require('mongoose-timestamp')
 const mongoose = require('mongoose')
 
@@ -14,12 +13,15 @@ const PollSchema = mongoose.Schema({
     description: String
   },
   responses: [{
+    _id: {
+      type: String,
+      required: true
+    },
     content: String,
     count: Number
   }]
 })
 
-PollSchema.plugin(mongooseStringQuery)
 PollSchema.plugin(timestamps)
 
 module.exports = (clientId, teamId) => mongoose.connection.useDb(clientId).model('Poll', PollSchema, teamId)

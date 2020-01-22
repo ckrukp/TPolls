@@ -1,0 +1,6 @@
+node_modules/
+logs/
+
+pnpm-lock.yaml
+
+src/util/config.js

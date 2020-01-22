@@ -1,3 +1,5 @@
+const uuid = require('uuid/v4')
+
 /**
  * The class for interacting with the Teams stored in the MongoDB backend.
  */
@@ -6,13 +8,12 @@ class TeamService {
   * The constructor for the Polls class. Requires the id of the team you wish
   * to interact with in order to function.
   *
-  * @param {String} clientId The unique identifier of the client using the API.
-  * @param {String} teamId The unique identifier of the team you wish to interact with.
+  * @param {restify.Request} req The request object to instantiate the service with.
   */
-  constructor (clientId, teamId) {
-    this.Model = require('../models/Team')(clientId)
-    this.clientId = clientId
-    this.teamId = teamId
+  constructor (req) {
+    this.Model = require('../models/Team')()
+    this.clientId = req.params.clientId
+    this.teamId = req.params.teamId
   }
 
   /**
@@ -20,14 +21,37 @@ class TeamService {
    *
    * @returns {Promise<Team[]>} An array of Teams via a Promise.
    */
-  async getTeams () { return this.Model.find() }
+  async getAllTeams () { return this.Model.find() }
+
+  /**
+   * Gets an array of Teams that have been created by the specified Client.
+   *
+   * @returns {Promise<Team[]>} An array of Teams via a Promise.
+   */
+  async getClientTeams () { return this.Model.find({ clientId: this.clientId }) }
 
   /**
    * Creates a new Team in MongoDB using the provided Team object.
    *
+   * @param {String} clientId The id of the Client to add the Team to.
    * @param {Team} team The Team object to create in the DB.
    */
-  async createTeam (team) { return this.Model.create(team) }
+  async createTeam (clientId, team) {
+    if (!team._id) team._id = uuid()
+
+    if (team.members) {
+      const members = []
+
+      for (const member of team.members) {
+        if (!member._id) member._id = uuid()
+        members.push(member)
+      }
+
+      team.members = members
+    }
+
+    return this.Model.create({ clientId: clientId, ...team })
+  }
 
   /**
    * Gets the team with the given id from MongoDB and returns it via a Promise.
@@ -68,21 +92,25 @@ class TeamService {
     return new Promise((resolve, reject) => {
       this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
-        else resolve(res.members)
+        else if (res) resolve(res.members)
+        else resolve(res)
       })
     })
   }
 
-  addMember (teamId, member) {
+  addMember (teamId, memberData) {
     return new Promise((resolve, reject) => {
       this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
           // Add the new Member object to the current Array of Members.
-          res.members.push(member)
+          res.members.push({
+            _id: uuid(),
+            ...memberData
+          })
 
-          // Send the newly updated Team object to the updateTeam method to store the changes.
-          resolve(this.updateTeam(teamId, res))
+          // Send the newly updated Members object to the updateTeam method to store the changes.
+          resolve(this.updateTeam(teamId, { members: res.members }))
         }
       })
     })
@@ -112,7 +140,8 @@ class TeamService {
       this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
-          let newMembers = []
+          const newMembersData = []
+
           // Iterate through the current list of Members searching for the one to update.
           for (const member of res.members) {
             // If the ids match, we've found the Member to update.
@@ -124,11 +153,10 @@ class TeamService {
               if (member.voteCount !== updateObj.voteCount) { member.voteCount = updateObj.voteCount }
             }
 
-            newMembers.push(member)
+            newMembersData.push(member)
           }
 
-          res.members = newMembers
-          resolve(this.updateTeam(teamId, res))
+          resolve(this.updateTeam(teamId, { members: newMembersData }))
         }
       })
     })
@@ -139,7 +167,7 @@ class TeamService {
       this.Model.findById(teamId, (err, res) => {
         if (err) reject(err)
         else {
-          let newMembers = []
+          const newMembers = []
           for (const member of res.members) {
             if (member._id !== memberId) newMembers.push(member)
           }

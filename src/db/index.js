@@ -1,5 +1,4 @@
 const ClientService = require('./services/ClientService')
-const AuthService = require('./services/AuthService')
 const PollService = require('./services/PollService')
 const TeamService = require('./services/TeamService')
 
@@ -9,7 +8,7 @@ const TeamService = require('./services/TeamService')
  *
  * @param {restify.Request} req The request object to instantiate the service with.
  */
-const getPollService = req => new PollService(req.params.teamId)
+const getPollService = req => new PollService(req.params.clientId, req.params.teamId)
 
 /**
  * Get the TeamService class which is used for interacting with the MongoDB
@@ -17,15 +16,7 @@ const getPollService = req => new PollService(req.params.teamId)
  *
  * @param {restify.Request} req The request object to instantiate the service with.
  */
-const getTeamService = req => new TeamService(req.params.teamId)
-
-/**
- * Get the AuthService class which is used for interacting with the MongoDB
- * backend for any data related to authentication.
- *
- * @param {restify.Request} req The request object to instantiate the service with.
- */
-const getAuthService = req => new AuthService(req.params.teamId)
+const getTeamService = req => new TeamService(req)
 
 /**
  * Get the ClientService class which is used for interacting with the MongoDB
@@ -33,7 +24,6 @@ const getAuthService = req => new AuthService(req.params.teamId)
  */
 const getClientService = () => new ClientService()
 
-module.exports.getAuthService = getAuthService
 module.exports.getPollService = getPollService
 module.exports.getTeamService = getTeamService
 module.exports.getClientService = getClientService
