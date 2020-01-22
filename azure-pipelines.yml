@@ -30,4 +30,4 @@ steps:
   inputs:
     sshEndpoint: 'HFCWEB01'
     contents: '**'
-    targetFolder: '/home/alcha/tpolls'
+    targetFolder: '/home/alcha/tpolls-deploy'
