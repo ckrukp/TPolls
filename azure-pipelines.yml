@@ -17,5 +17,4 @@ steps:
 
 - script: |
     pnpm install
-    pnpm run build
-  displayName: 'npm install and build'
+  displayName: 'pnpm install'
