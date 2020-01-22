@@ -25,7 +25,7 @@ steps:
     sshEndpoint: 'HFCWEB01'
     contents: '**'
     targetFolder: '/home/alcha/tpolls'
-    cleanTargetFolder: true
+    cleanTargetFolder: false
 
 - task: SSH@0
   inputs:
