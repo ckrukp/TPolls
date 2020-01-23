@@ -1,10 +1,17 @@
 const log = require('./src/util/tools').getLogger()
 const versioning = require('restify-url-semver')
+const Cors = require('restify-cors-middleware')
 const config = require('./src/util/config')
 const mongoose = require('mongoose')
 const restify = require('restify')
 const morgan = require('morgan')
 const plugins = restify.plugins
+
+const cors = Cors({
+  origins: ['localhost:4242', 'tpolls.app'],
+  allowHeaders: ['Api-Key', 'Content-Type'],
+  exposeHeaders: ['Api-Key', 'Content-Type']
+})
 
 const SERVER_PORT = process.env.PORT || 4242
 const server = restify.createServer({
@@ -12,13 +19,15 @@ const server = restify.createServer({
   version: process.env.VERSION
 })
 
-server.use(morgan('combined'))
-server.use(plugins.bodyParser())
+server.pre(versioning({ prefix: '/api' }))
+server.pre(cors.preflight)
+
+server.use(plugins.acceptParser(server.acceptable))
 server.use(plugins.fullResponse())
 server.use(plugins.gzipResponse())
-server.use(plugins.acceptParser(server.acceptable))
-
-server.pre(versioning({ prefix: '/api' }))
+server.use(plugins.bodyParser())
+server.use(morgan('combined'))
+server.use(cors.actual)
 
 server.listen(SERVER_PORT, () => {
   mongoose.Promise = global.Promise
